@@ -75,7 +75,7 @@ class Sprite_Handler
   def create_sprite (params)
 
     # TODO handle an error better
-    sp = Sprite.new(@game_window, params[:image_filename])
+    sp = Sprite.new(@game_window, params[:image])
 
     if sp == nil 
       return nil
@@ -113,7 +113,7 @@ class Sprite_Handler
     # set the starting speed
     params[:startdx] ? params[:dx] = params[:startdx] : params[:dx] = 0
     params[:startdy] ? params[:dy] = params[:startdy] : params[:dy] = 0
-    
+
     check_bounds(sp, params)
 
     # set sprite depth
@@ -129,30 +129,44 @@ class Sprite_Handler
     # Add this sprite parameter definition to our @params hash using it's name
     # as a key
 
-    if params
-      if params[:image_filename] && params [:name]
-        # can i load the sound file?
-        if params[:sound_filename]
-          fx = Gosu::Sample.new(@game_window, params[:sound_filename])
-          if fx 
-            params[:sound] = fx
-          end
-        end
+    if params == nil 
+      return false
+    end
 
-        # set some default values
-        params[:startdx] ? params[:dx] = params[:startdx] : params[:dx] = 0
-        params[:startdy] ? params[:dy] = params[:startdy] : params[:dy] = 0
-        params[:depth] ? params[:depth] : 0
-        params[:max_num] ? params[:max_num] : 1
-        params[:rarity] ? params[:rarity] : 1
-        params[:num] = 0
+    if !params[:name]
+      return false
+    end
 
-        @params[params[:name]] = params
-        puts "add a new params: #{params.inspect}"
-        return true
+    # can i load the image file?
+    if params[:image_filename]
+      sprite_image = Gosu::Image.new(@game_window,params[:image_filename])
+      if sprite_image 
+        params[:image] = sprite_image
+      else
+        return false
       end
     end
-    return false
+
+    # Load the sound file?
+    if params[:sound_filename]
+      fx = Gosu::Sample.new(@game_window, params[:sound_filename])
+      if fx 
+        params[:sound] = fx
+      end
+    end
+
+    # set some default values
+    params[:startdx] ? params[:dx] = params[:startdx] : params[:dx] = 0
+    params[:startdy] ? params[:dy] = params[:startdy] : params[:dy] = 0
+    params[:depth] ? params[:depth] : 0
+    params[:max_num] ? params[:max_num] : 1
+    params[:rarity] ? params[:rarity] : 1
+    params[:num] = 0
+
+    @params[params[:name]] = params
+    puts "add a new sprite definition: #{params.inspect}"
+    return true
+
   end
 
   def handle_collisions(player)
@@ -169,11 +183,11 @@ class Sprite_Handler
       hit_sprites.each do |sp|
         player.score += p[:score]
         player.lives += p[:lives]
-        
+
         @sprites.delete(sp)
         p[:num] -= 1
         puts "Collided with spite: #{sp.name}"
-        
+
         if p[:sound] 
           p[:sound].play
         end

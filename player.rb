@@ -1,4 +1,5 @@
 require "./sprite.rb"
+require "./depth_constants"
 
 LIVES = 1
 RETRY = 1
@@ -9,10 +10,14 @@ class Player < Sprite
   attr_accessor :lives
 
   def initialize(game_window)
-    super(game_window,'media/YoshiDanceSprite.png')
-    @Eggbeep = Gosu::Sample.new(@game_window, "media/eggbeep.wav")
-    @BallBeep = Gosu::Sample.new(@game_window, "media/spikeballbeep.wav")
-    @MegaBallBeep = Gosu::Sample.new(@game_window, "media/megaballbeep.wav")
+    # can i load the image file?
+
+    sprite_image = Gosu::Image.new(game_window,'media/YoshiDanceSprite.png')
+    if sprite_image 
+      super(game_window, sprite_image, DepthOrder::Player)
+    else
+      return nil
+    end
 
     @x = 800
     @y = 915
@@ -44,14 +49,6 @@ class Player < Sprite
     @y += 15
     if @y > (1200 - @height )
       @y = 1200 - @height
-    end
-  end
-
-  def catch_bird(birds)
-    if birds.reject! {|bird| Gosu::distance(@x, @y, bird.x, bird.y) < 70 } then
-      @lives += 1
-      @score += 10
-      @Eggbeep.play
     end
   end
 

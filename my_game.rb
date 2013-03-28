@@ -86,7 +86,7 @@ class MyGame < Gosu::Window
       :image_filename => "media/birdsprite.png",
       :sound_filename => "media/eggbeep.wav",
       :startx => :left,
-      :starty => r200,
+      :starty => 200,
       :startdx => 15,
       :startdy => 0,
       :xdisplay => nil,
