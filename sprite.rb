@@ -1,0 +1,31 @@
+require "gosu"
+
+class Sprite
+  attr_accessor :name
+  attr_accessor :x, :y
+  attr_accessor :depth, :height, :width
+
+  def initialize(game_window, filename )
+    @game_window = game_window  
+    @x = @y = 0
+    @depth = DepthOrder::Background
+    @valid_spite = false
+    load(filename)  unless filename == nil
+  end
+
+  def load(filename)
+    @SpriteImage = Gosu::Image.new(@game_window,filename)
+    @valid_spite = true  unless @SpriteImage == nil
+    @height = @SpriteImage.height
+    @width = @SpriteImage.width
+  end
+
+  def draw
+    @SpriteImage.draw(@x,@y,@depth)  unless @valid_spite == false
+  end
+  
+  # checks a sprite's position relative to the bounds it is set and adjusts accordingly
+  def off_screen?
+    return (@x < -@width or @x > @game_window.width or @y < -@height or @y > @game_window.height)
+  end
+end
