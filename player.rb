@@ -1,8 +1,8 @@
 require "./sprite.rb"
 require "./depth_constants"
 
-LIVES = 1
-RETRY = 1
+LIVES = 2
+RETRY = 3
 
 
 class Player < Sprite
